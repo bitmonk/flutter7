@@ -23,7 +23,7 @@ class NewItem extends StatelessWidget {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Color(0XFFF5F2F9),
-                  hintText: "Task Item",
+                  hintText: "Don'tEnter Text !",
                   focusedBorder: formBorder(),
                   enabledBorder: formBorder(),
                 ),
@@ -41,5 +41,6 @@ class NewItem extends StatelessWidget {
                     width: 1,
                     ),
                 );
+
   }
 }
