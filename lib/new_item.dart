@@ -15,17 +15,39 @@ class NewItem extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          
+          // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Task Title"),
+              formTitle("Task Title"),
               TextFormField(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Color(0XFFF5F2F9),
-                  hintText: "Don'tEnter Text !",
-                  focusedBorder: formBorder(),
-                  enabledBorder: formBorder(),
+                  hintText: "Task Item",
+                  focusedBorder: formBorder(true),
+                  enabledBorder: formBorder(false),
+                ),
+              ),
+              SizedBox(height: 8),
+              formTitle("Category Name"),
+              Row(
+                children: [
+                  Chip(label: Text("Eucation", style: TextStyle(color: Colors.white)), backgroundColor: Colors.purple),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Chip(label: Text("Shop", style: TextStyle(color: Colors.white)), backgroundColor: Colors.purple,),
+                ],
+              ),
+              formTitle("Note"),
+              TextFormField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0XFFF5F2F9),
+                  hintText: "Task Item",
+                  focusedBorder: formBorder(true),
+                  enabledBorder: formBorder(false),
                 ),
               ),
             ],
@@ -34,13 +56,27 @@ class NewItem extends StatelessWidget {
     );
   }
 
-  OutlineInputBorder formBorder() {
+  Padding formTitle(String title) {
+    return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(title),
+            );
+  }
+
+  OutlineInputBorder formBorder(bool isForFocus) {
+    if(isForFocus){
     return OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: const Color.fromARGB(255, 243, 33, 33),
+                    color: Colors.blue,
+                    width: 1.5,
+                    ),
+                );
+    }
+    return OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.black,
                     width: 1,
                     ),
                 );
-
   }
 }
