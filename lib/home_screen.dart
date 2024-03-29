@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                 children:[
                   Divider(),
                   TodoListItem("market"),
-                  Text("data"),
+                  // Text("data"),
                 ]
               )
              ),
@@ -78,9 +78,9 @@ class TodoListItem extends StatelessWidget {
           if (value == 'view') {
             log("view");
           } else if (value == 'delete') {
-            // Handle delete action
+            log("deleted");
           } else if (value == 'mark_as_completed') {
-            // Handle mark as completed action
+            log("marked as completed");
           }
         },
         itemBuilder: (BuildContext context) => [
