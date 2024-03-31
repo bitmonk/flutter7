@@ -2,11 +2,31 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+class _HomeScreenState extends State<HomeScreen> {
+  
+  List<Map<String, dynamic>> completedTask = [
+    {
+      "category_name" : "school",
+      "description" : "This is the description of completed tasks",
+      "title" : "This is the title",
+    },
+  ];
 
+  List<Map<String, dynamic>> incompleteTask = [
+    {
+      "category_name" : "school",
+      "description" : "This is the description of incomplete task",
+      "title" : "This is the title",
+    },
+  ];
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -28,7 +48,6 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Column(
                 children:[
-                  TodoListItem("school"),
                   Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -37,16 +56,21 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Column(
                 children:[
+                  for(var data in incompleteTask)
+                  TodoListItem("school"),
                   Divider(),
                   TodoListItem("market"),
                   // Text("data"),
                 ]
               )
              ),
+             TextTitle("Complete"),
+            TodoListItem("school"),
+            TodoListItem("market"),
                 ]
               )
              ),
-             TextTitle("Complete"),
+
           ],
         ),
       ),
@@ -55,8 +79,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 class TodoListItem extends StatelessWidget {
-  final String categoryName;
-  TodoListItem(this.categoryName);
+  final Map<String, dynamic> task;
+  TodoListItem(this.task);
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +89,12 @@ class TodoListItem extends StatelessWidget {
         padding: EdgeInsets.all(3),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(360),
-          color: categoryName == "school" ?Colors.green.withOpacity(0.5) : Colors.orange.withOpacity(0.5) ,
+          color: task == "school" ?Colors.green.withOpacity(0.5) : Colors.orange.withOpacity(0.5) ,
           border: Border.all(color: Colors.green)
         ),
         child: Icon(
-          categoryName == "school" ? Icons.school : Icons.shopping_cart,
-          color: categoryName == "school" ? Colors.green : Colors.orange,
+          task == "school" ? Icons.school : Icons.shopping_cart,
+          color: task == "school" ? Colors.green : Colors.orange,
         ),
       ),
       trailing:  PopupMenuButton<String>(
