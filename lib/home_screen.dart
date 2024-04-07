@@ -1,147 +1,166 @@
-import 'dart:developer';
+import 'dart:io';
 
+import 'package:demo/components/text_title.dart';
+import 'package:demo/new_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+import 'components/to_do_list_item.dart'; 
 
+class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-class _HomeScreenState extends State<HomeScreen> {
-  
-  List<Map<String, dynamic>> completedTask = [
-    {
-      "category_name" : "school",
-      "description" : "This is the description of completed tasks",
-      "title" : "This is the title",
-    },
-  ];
 
-  List<Map<String, dynamic>> incompleteTask = [
-    {
-      "category_name" : "school",
-      "description" : "This is the description of incomplete task",
-      "title" : "This is the title",
-    },
-  ];
+class _HomeScreenState extends State<HomeScreen> {
+  List<Map<String, dynamic>> completedTask = [];
+  List<Map<String, dynamic>> uncompletedTasks = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    // calls itself before ui is rendered on screen
+    loadData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // calls itself after ui is removed on screen
+
+    super.dispose();
+  }
+
+  void loadData() async {
+    //
+    // post
+    await Future.delayed(
+      Duration(seconds: 3),
+      () {
+        setState(() {
+          isLoading = false;
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    /*
+    var object = [];
+    abc = object;
+    abc.remove();
+    object.add();
+    */
     return Scaffold(
       appBar: AppBar(
         title: Text("Home Page"),
         centerTitle: true,
         foregroundColor: Colors.white,
-        backgroundColor: Color.fromARGB(255, 15, 144, 177),
+        backgroundColor: Colors.purple,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-             TextTitle("Incomplete"),
-             Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Color(0XFFe9defe),
-
-              ),
-              child: Column(
-                children:[
+        child: isLoading
+            ? CircularProgressIndicator()
+            : ListView(
+                children: [
+                  TextTitle("Uncompleted"),
                   Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Color(0XFFe9defe),
-
+                    padding: EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Color(0XFFe9defe),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < uncompletedTasks.length; i++)
+                          Column(
+                            children: [
+                              ToDoListItem(uncompletedTasks[i], "uncompleted",
+                                  () {
+                                setState(() {
+                                  uncompletedTasks.removeAt(i);
+                                });
+                              }, () {
+                                setState(() {
+                                  var temp = uncompletedTasks[i];
+                                  uncompletedTasks.removeAt(i);
+                                  completedTask.add(temp);
+                                });
+                              }),
+                              Divider(),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ),
+                  TextTitle("Completed"),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Color(0XFFe9defe),
+                    ),
+                    child: completedTask.isEmpty
+                        ? Center(
+                            child: Text("Empty text"),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var i = 0; i < completedTask.length; i++)
+                                Column(
+                                  children: [
+                                    ToDoListItem(completedTask[i], "completed",
+                                        () {
+                                      setState(() {
+                                        completedTask.removeAt(i);
+                                      });
+                                    }, () {
+                                      setState(() {
+                                        var temp = completedTask[i];
+                                        completedTask.removeAt(i);
+                                        uncompletedTasks.add(temp);
+                                      });
+                                    }),
+                                    Divider(),
+                                  ],
+                                ),
+                            ],
+                          ),
+                  ),
+                ],
               ),
-              child: Column(
-                children:[
-                  for(var data in incompleteTask)
-                  TodoListItem("school"),
-                  Divider(),
-                  TodoListItem("market"),
-                  // Text("data"),
-                ]
-              )
-             ),
-             TextTitle("Complete"),
-            TodoListItem("school"),
-            TodoListItem("market"),
-                ]
-              )
-             ),
-
-          ],
-        ),
       ),
-    );
-  }
-}
-
-class TodoListItem extends StatelessWidget {
-  final Map<String, dynamic> task;
-  TodoListItem(this.task);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Container(
-        padding: EdgeInsets.all(3),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(360),
-          color: task == "school" ?Colors.green.withOpacity(0.5) : Colors.orange.withOpacity(0.5) ,
-          border: Border.all(color: Colors.green)
-        ),
-        child: Icon(
-          task == "school" ? Icons.school : Icons.shopping_cart,
-          color: task == "school" ? Colors.green : Colors.orange,
-        ),
-      ),
-      trailing:  PopupMenuButton<String>(
-        onSelected: (value) {
-          if (value == 'view') {
-            log("view");
-          } else if (value == 'delete') {
-            log("deleted");
-          } else if (value == 'mark_as_completed') {
-            log("marked as completed");
-          }
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // ahdfhasdfhjsdf
+          var returnedValud = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NewItem(),
+              ));
+          setState(() {
+            this.uncompletedTasks.insert(0, returnedValud);
+          });
+          // log("page push balla balla vayo");
         },
-        itemBuilder: (BuildContext context) => [
-          const PopupMenuItem<String>(
-            value: 'view',
-            child: Text('View'),
-          ),
-          const PopupMenuItem<String>(
-            value: 'delete',
-            child: Text('Delete'),
-          ),
-          const PopupMenuItem<String>(
-            value: 'mark_as_completed',
-            child: Text('Mark as Completed'),
-          ),
-        ],
-      ),
-      title: Text("Title"),
-      subtitle: Text("This is a subtitle. This is the description of the item. This is a subtitle. This is the description of the item. This is a subtitle. This is the description of the item. This is a subtitle. This is the description of the item. ", 
-      maxLines: 3,
-      overflow: TextOverflow.ellipsis,
+        child: Icon(
+          Icons.add,
+        ),
       ),
     );
   }
-}
 
-class TextTitle extends StatelessWidget {
-  final String title;
-  TextTitle(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-          padding: const EdgeInsets.only(
-            bottom: 8,
-          ),
-          child: Text(title),
-        );
+  Future someFunction() async {
+    return "null";
   }
 }
